@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Login</title>
-    <style>
-        body { font-family: Arial; text-align: center; }
-        .box { margin-top: 100px; }
-    </style>g
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="box">
-        <h2>Student Login</h2>
-        <form action="LoginServlet" method="post">
-            <input type="text" name="username" placeholder="Username" required><br><br>
-            <input type="password" name="password" placeholder="Password" required><br><br>
-            <button type="submit">Login</button>
-        </form>
-    </div>
+
+<div class="container">
+    <h2>Student Login</h2>
+    <input type="text" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+</div>
+
+<script src="js/app.js"></script>
 </body>
 </html>
