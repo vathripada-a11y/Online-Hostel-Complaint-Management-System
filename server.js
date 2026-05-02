@@ -4,9 +4,11 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// Basic routes
 app.get('/', (req, res) => {
   res.send('Hostel Complaint System is running!')
 })
+
 app.get('/student', (req, res) => {
   res.send('Welcome Student!')
 })
