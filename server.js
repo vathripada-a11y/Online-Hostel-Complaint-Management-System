@@ -3,6 +3,7 @@ const app = express()
 const session = require('express-session')
 const db = require('./db/connect')
 const authRoutes = require('./routes/auth')
+const complaintRoutes = require('./routes/complaints')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -11,10 +12,14 @@ app.use(session({
   secret: 'hostel123',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 24 * 60 * 60 * 1000 }
+  cookie: { 
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: false
+  }
 }))
 
 app.use('/api', authRoutes)
+app.use('/api/complaints', complaintRoutes)
 
 app.get('/', (req, res) => {
   res.send('Hostel Complaint System is running!')
