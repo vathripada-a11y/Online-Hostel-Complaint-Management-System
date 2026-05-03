@@ -38,5 +38,59 @@ router.post('/register', async (req, res) => {
     res.json({ success: false, message: 'Something went wrong' })
   }
 })
+// LOGIN
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body
 
+  // Check fields are filled
+  if (!email || !password) {
+    return res.json({ success: false, message: 'Email and password are required' })
+  }
+
+  try {
+    // Find user by email
+    const [users] = await db.promise().query(
+      'SELECT * FROM users WHERE email = ?', [email]
+    )
+
+    // If no user found
+    if (users.length === 0) {
+      return res.json({ success: false, message: 'Invalid email or password' })
+    }
+
+    const user = users[0]
+
+    // Compare password with hashed password
+    const passwordMatch = await bcrypt.compare(password, user.password)
+
+    if (!passwordMatch) {
+      return res.json({ success: false, message: 'Invalid email or password' })
+    }
+
+    // Create session
+    req.session.user = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    }
+
+    res.json({
+      success: true,
+      message: 'Login successful!',
+      role: user.role,
+      name: user.name
+    })
+
+  } catch (err) {
+    console.log('Login error:', err)
+    res.json({ success: false, message: 'Something went wrong' })
+  }
+})
+
+// LOGOUT
+router.get('/logout', (req, res) => {
+  req.session.destroy()
+  res.json({ success: true, message: 'Logged out successfully!' })
+})
 module.exports = router

@@ -1,13 +1,21 @@
 const express = require('express')
 const app = express()
+const session = require('express-session')
 const db = require('./db/connect')
 const authRoutes = require('./routes/auth')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use(session({
+  secret: 'hostel123',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 24 * 60 * 60 * 1000 }
+}))
+
 app.use('/api', authRoutes)
 
-// Basic routes
 app.get('/', (req, res) => {
   res.send('Hostel Complaint System is running!')
 })
