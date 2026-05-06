@@ -1,49 +1,42 @@
-const express = require("express");
-const cors = require("cors");
+const express = require('express')
+const app = express()
+const session = require('express-session')
+const db = require('./db/connect')
+const authRoutes = require('./routes/auth')
+const complaintRoutes = require('./routes/complaints')
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-let complaints = []; // temporary storage
+app.use(session({
+  secret: 'hostel123',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: false
+  }
+}))
 
-// LOGIN API
-app.post("/login", (req, res) => {
-    const { email, password } = req.body;
+app.use('/api', authRoutes)
+app.use('/api/complaints', complaintRoutes)
 
-    if (email && password) {
-        res.json({ success: true, userId: 1 });
-    } else {
-        res.json({ success: false });
-    }
-});
+app.get('/', (req, res) => {
+  res.send('Hostel Complaint System is running!')
+})
 
-// SUBMIT COMPLAINT
-app.post("/submit-complaint", (req, res) => {
-    const { title, description, userId } = req.body;
+app.get('/student', (req, res) => {
+  res.send('Welcome Student!')
+})
 
-    const newComplaint = {
-        id: complaints.length + 1,
-        title,
-        description,
-        userId,
-        status: "pending"
-    };
+app.get('/warden', (req, res) => {
+  res.send('Welcome Warden!')
+})
 
-    complaints.push(newComplaint);
+app.get('/admin', (req, res) => {
+  res.send('Welcome Admin!')
+})
 
-    res.json({ message: "Complaint added" });
-});
-
-// GET MY COMPLAINTS
-app.get("/my-complaints", (req, res) => {
-    const userId = req.query.userId;
-
-    const userComplaints = complaints.filter(c => c.userId == userId);
-
-    res.json(userComplaints);
-});
-
-app.listen(5000, () => {
-    console.log("Server running on http://localhost:5000");
-});
+app.listen(3000, () => {
+  console.log('Server started on port 3000')
+})
