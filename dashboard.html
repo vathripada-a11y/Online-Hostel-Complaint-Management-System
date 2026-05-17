@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h2>Complaints</h2>
+
+<table border="1">
+<tr>
+    <th>ID</th>
+    <th>Type</th>
+    <th>Name</th>
+    <th>Room</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+
+<tr>
+    <td>1</td>
+    <td>Water</td>
+    <td>Kavana</td>
+    <td>101</td>
+    <td id="s1">pending</td>
+    <td>
+        <select onchange="change(this,'s1')">
+            <option>pending</option>
+            <option>in_progress</option>
+            <option>resolved</option>
+        </select>
+    </td>
+</tr>
+
+</table>
+
+<script>
+function change(x,id){
+    document.getElementById(id).innerHTML = x.value;
+}
+</script>
+
+</body>
+</html>
