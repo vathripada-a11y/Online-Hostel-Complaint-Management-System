@@ -20,6 +20,7 @@ app.use(session({
 
 app.use('/api', authRoutes)
 app.use('/api/complaints', complaintRoutes)
+app.use(express.static('frontend'))
 
 app.get('/', (req, res) => {
   res.send('Hostel Complaint System is running!')

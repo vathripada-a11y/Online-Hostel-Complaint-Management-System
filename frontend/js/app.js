@@ -1,70 +1,89 @@
-const BASE_URL = "http://localhost:5000";
-// LOGIN
-function login(event) {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+const BASE_URL = "http://localhost:3000";
 
-    fetch(BASE_URL + "/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            localStorage.setItem("userId", data.userId);
-            window.location.href = "dashboard.html";
-        } else {
-            alert("Login failed");
-        }
-    });
+// LOGIN
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  fetch(BASE_URL + "/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      if (data.role === "student") {
+        window.location.href = "dashboard.html";
+      } else if (data.role === "warden") {
+        window.location.href = "../warden_login.html";
+      } else if (data.role === "admin") {
+        window.location.href = "../dashboard.html";
+      }
+    } else {
+      alert(data.message);
+    }
+  });
 }
 
 // SUBMIT COMPLAINT
 function submitComplaint() {
-    const title = document.getElementById("title").value;
-    const description = document.getElementById("description").value;
-    const userId = localStorage.getItem("userId");
+  const type = document.getElementById("title").value;
+  const description = document.getElementById("description").value;
 
-    fetch(BASE_URL + "/submit-complaint", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ title, description, userId })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert("Complaint Submitted!");
-    });
+  fetch(BASE_URL + "/api/complaints", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ type, description })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("Complaint submitted successfully!")
+    } else {
+      alert(data.message)
+    }
+  });
 }
-//LOAD COMPLAINT
+
+// LOAD COMPLAINTS
 function loadComplaints() {
-    const userId = localStorage.getItem("userId");
+  fetch(BASE_URL + "/api/complaints/my-complaints", {
+    credentials: "include"
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      alert("Please login first!")
+      window.location.href = "studentlogin.html"
+      return
+    }
 
-    fetch(BASE_URL + "/my-complaints?userId=" + userId)
-    .then(res => res.json())
-    .then(data => {
-        const list = document.getElementById("complaintsList");
-        list.innerHTML = "";
+    const list = document.getElementById("complaintsList");
+    list.innerHTML = "";
 
-        data.forEach(c => {
-            let badgeClass = "";
+    if (data.complaints.length === 0) {
+      list.innerHTML = "<p>No complaints submitted yet!</p>"
+      return
+    }
 
-            if (c.status === "pending") badgeClass = "pending";
-            else if (c.status === "in progress") badgeClass = "inprogress";
-            else badgeClass = "resolved";
+    data.complaints.forEach(c => {
+      let badgeClass = c.status === "pending" ? "pending" :
+                       c.status === "in_progress" ? "inprogress" : "resolved";
 
-            list.innerHTML += `
-                <div>
-                    <h3>${c.title}</h3>
-                    <p>${c.description}</p>
-                    <span class="badge ${badgeClass}">${c.status}</span>
-                    <hr>
-                </div>
-            `;
-        });
+      list.innerHTML += `
+        <div style="background:white; padding:16px; margin-bottom:12px; border-radius:8px;">
+          <h3>${c.type}</h3>
+          <p>${c.description}</p>
+          <span class="badge ${badgeClass}">${c.status.replace('_', ' ')}</span>
+          <p style="font-size:12px; color:#999; margin-top:8px;">
+            ${new Date(c.created_at).toLocaleDateString()}
+          </p>
+          <hr>
+        </div>
+      `;
     });
+  });
 }
