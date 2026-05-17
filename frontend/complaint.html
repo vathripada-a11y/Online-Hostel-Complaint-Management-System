@@ -1,18 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Submit Complaint</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>Submit Complaint</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="container">
-    <h2>Submit Complaint</h2>
+<div class="navbar">
+  <span class="brand">Hostel Complaint System</span>
+  <div class="nav-right">
+    <button class="btn-outline" onclick="window.location.href='dashboard.html'">← Back</button>
+  </div>
+</div>
 
-    <input type="text" id="title" placeholder="Title"><br>
-    <textarea id="description" placeholder="Description"></textarea><br>
+<div class="page-container">
+  <div class="section-header">
+    <h2>Submit a Complaint</h2>
+  </div>
 
-    <button onclick="submitComplaint()">Submit</button>
+  <div style="background:white; padding:28px; border-radius:12px; border:1px solid #e2e8f0;">
+    <div class="form-group">
+      <label>Complaint Type</label>
+      <select id="title">
+        <option value="">Select complaint type</option>
+        <option value="Water Leakage">Water Leakage</option>
+        <option value="Electricity Issue">Electricity Issue</option>
+        <option value="WiFi Not Working">WiFi Not Working</option>
+        <option value="Cleanliness">Cleanliness</option>
+        <option value="Fan Issue">Fan Issue</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="description" placeholder="Describe your issue in detail..."></textarea>
+    </div>
+
+    <button class="btn-primary" onclick="submitComplaint()">Submit Complaint</button>
+  </div>
 </div>
 
 <script src="js/app.js"></script>

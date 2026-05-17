@@ -1,19 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Complaints</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>My Complaints</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<h2>My Complaints</h2>
+<div class="navbar">
+  <span class="brand">Hostel Complaint System</span>
+  <div class="nav-right">
+    <button class="btn-outline" onclick="window.location.href='dashboard.html'">← Back</button>
+    <button class="btn-outline" onclick="logout()">Logout</button>
+  </div>
+</div>
 
-<div id="complaintsList"></div>
+<div class="page-container">
+  <div class="section-header">
+    <h2>My Complaints</h2>
+  </div>
+  <div id="complaintsList">
+    <p style="text-align:center; color:#718096; padding:40px;">Loading complaints...</p>
+  </div>
+</div>
 
 <script src="js/app.js"></script>
 <script>
-    loadComplaints();
+  loadComplaints()
 </script>
-
 </body>
 </html>

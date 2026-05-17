@@ -73,15 +73,15 @@ function loadComplaints() {
       let badgeClass = c.status === "pending" ? "pending" :
                        c.status === "in_progress" ? "inprogress" : "resolved";
 
-      list.innerHTML += `
-        <div style="background:white; padding:16px; margin-bottom:12px; border-radius:8px;">
+     list.innerHTML += `
+  <div class="complaint-card">
           <h3>${c.type}</h3>
           <p>${c.description}</p>
           <span class="badge ${badgeClass}">${c.status.replace('_', ' ')}</span>
           <p style="font-size:12px; color:#999; margin-top:8px;">
             ${new Date(c.created_at).toLocaleDateString()}
           </p>
-          <hr>
+          
         </div>
       `;
     });
