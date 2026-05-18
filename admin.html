@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="frontend/css/style.css">
+</head>
+<body>
+
+<div class="navbar">
+  <span class="brand">Hostel Complaint System — Admin</span>
+  <div class="nav-right">
+    <button class="btn-outline" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="dashboard">
+  <h2>Admin Dashboard</h2>
+  <div class="card-container">
+    <div class="stat-card">
+      <h3>Total Complaints</h3>
+      <h1 id="total">0</h1>
+    </div>
+    <div class="stat-card" style="border-left-color:#e53e3e;">
+      <h3>Pending</h3>
+      <h1 id="pending" style="color:#e53e3e;">0</h1>
+    </div>
+    <div class="stat-card" style="border-left-color:#d97706;">
+      <h3>In Progress</h3>
+      <h1 id="inprogress" style="color:#d97706;">0</h1>
+    </div>
+    <div class="stat-card" style="border-left-color:#38a169;">
+      <h3>Resolved</h3>
+      <h1 id="resolved" style="color:#38a169;">0</h1>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function loadStats() {
+    const res = await fetch('http://localhost:3000/api/complaints/stats', {
+      credentials: 'include'
+    })
+    const data = await res.json()
+    if (data.success) {
+      document.getElementById('total').textContent = data.stats.total
+      document.getElementById('pending').textContent = data.stats.pending
+      document.getElementById('inprogress').textContent = data.stats.in_progress
+      document.getElementById('resolved').textContent = data.stats.resolved
+    } else {
+      alert('Please login first!')
+      window.location.href = 'frontend/studentlogin.html'
+    }
+  }
+
+  function logout() {
+    fetch('http://localhost:3000/api/logout', { credentials: 'include' })
+    .then(() => window.location.href = 'frontend/studentlogin.html')
+  }
+
+  loadStats()
+</script>
+
+</body>
+</html>
