@@ -23,7 +23,7 @@ app.use('/api/complaints', complaintRoutes)
 app.use(express.static('frontend'))
 
 app.get('/', (req, res) => {
-  res.send('Hostel Complaint System is running!')
+  res.sendFile(__dirname + '/frontend/index.html')
 })
 
 app.get('/student', (req, res) => {
