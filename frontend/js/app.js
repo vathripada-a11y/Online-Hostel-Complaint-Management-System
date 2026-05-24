@@ -19,7 +19,7 @@ function login() {
       } else if (data.role === "warden") {
         window.location.href = "../warden_login.html";
       } else if (data.role === "admin") {
-        window.location.href = "../dashboard.html";
+        window.location.href = "/admin.html";
       }
     } else {
       alert(data.message);

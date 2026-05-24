@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Warden Dashboard</title>
+ <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="navbar">
+  <span class="brand">Hostel Complaint System — Warden</span>
+  <div class="nav-right">
+    <span id="wardenName">Warden</span>
+    <button class="btn-outline" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="dashboard">
+  <div class="section-header">
+    <h2>All Complaints</h2>
+    <div style="display:flex;gap:8px;">
+      <select id="filterStatus" onchange="filterComplaints()" 
+        style="padding:8px 12px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:13px;color:#1a202c;outline:none;">
+        <option value="all">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="in_progress">In Progress</option>
+        <option value="resolved">Resolved</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="complaintsList">
+    <p style="text-align:center;color:#718096;padding:40px;">Loading complaints...</p>
+  </div>
+</div>
+
+<script>
+let allComplaints = []
+
+async function loadComplaints() {
+  const res = await fetch('http://localhost:3000/api/complaints/all', {
+    credentials: 'include'
+  })
+  const data = await res.json()
+
+  if (!data.success) {
+    alert('Please login first!')
+    window.location.href = '/warden_login.html'
+    return
+  }
+
+  allComplaints = data.complaints
+  displayComplaints(allComplaints)
+}
+
+function displayComplaints(complaints) {
+  const list = document.getElementById('complaintsList')
+
+  if (complaints.length === 0) {
+    list.innerHTML = '<p style="text-align:center;color:#718096;padding:40px;">No complaints found!</p>'
+    return
+  }
+
+  list.innerHTML = complaints.map(c => `
+    <div class="complaint-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+        <div>
+          <h3>${c.type}</h3>
+          <p>${c.description}</p>
+          <p class="meta">
+            👤 ${c.student_name} &nbsp;|&nbsp; 
+            🏠 Room ${c.room_number} &nbsp;|&nbsp;
+            📅 ${new Date(c.created_at).toLocaleDateString()}
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <span class="badge ${c.status === 'pending' ? 'pending' : c.status === 'in_progress' ? 'inprogress' : 'resolved'}">
+            ${c.status.replace('_', ' ')}
+          </span>
+          <select onchange="updateStatus(${c.id}, this.value)"
+            style="padding:6px 10px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:12px;color:#1a202c;outline:none;cursor:pointer;">
+            <option value="">Update status</option>
+            <option value="pending" ${c.status === 'pending' ? 'selected' : ''}>Pending</option>
+            <option value="in_progress" ${c.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+            <option value="resolved" ${c.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  `).join('')
+}
+
+async function updateStatus(id, status) {
+  if (!status) return
+
+  const res = await fetch(`http://localhost:3000/api/complaints/${id}/status`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ status })
+  })
+
+  const data = await res.json()
+
+  if (data.success) {
+    alert('Status updated successfully!')
+    loadComplaints()
+  } else {
+    alert(data.message)
+  }
+}
+
+function filterComplaints() {
+  const filter = document.getElementById('filterStatus').value
+  if (filter === 'all') {
+    displayComplaints(allComplaints)
+  } else {
+    const filtered = allComplaints.filter(c => c.status === filter)
+    displayComplaints(filtered)
+  }
+}
+
+async function logout() {
+  await fetch('http://localhost:3000/api/logout', { credentials: 'include' })
+  window.location.href = '/warden_login.html'
+}
+
+loadComplaints()
+</script>
+
+</body>
+</html>

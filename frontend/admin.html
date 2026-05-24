@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="frontend/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -49,13 +49,13 @@
       document.getElementById('resolved').textContent = data.stats.resolved
     } else {
       alert('Please login first!')
-      window.location.href = 'frontend/studentlogin.html'
+      window.location.href = '/studentlogin.html'
     }
   }
 
   function logout() {
     fetch('http://localhost:3000/api/logout', { credentials: 'include' })
-    .then(() => window.location.href = 'frontend/studentlogin.html')
+    .then(() => window.location.href = '/studentlogin.html')
   }
 
   loadStats()
